@@ -17,7 +17,8 @@ jobs:
           cache: true
       - run: vp install
       - run: vp check
-      - run: vp build
+      - run: vp pack
+      - run: vp run verify
   publish:
     if: github.ref == 'refs/heads/main'
     needs: tests

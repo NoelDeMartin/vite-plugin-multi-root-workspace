@@ -9,14 +9,19 @@
     "dist"
   ],
   "type": "module",
+  "scripts": {
+    "verify": "noeldemartin-verify"
+  },
   "exports": {
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@noeldemartin/scripts": "next",
     "@types/node": "^25.6.2",
     "@typescript/native-preview": "7.0.0-dev.20260509.2",
+    "publint": "^0.3.21",
     "typescript": "^6.0.3",
     "vite": "^8.0.13",
     "vite-plus": "^0.1.20"

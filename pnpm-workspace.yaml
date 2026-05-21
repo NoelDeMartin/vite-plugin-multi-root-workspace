@@ -1,3 +1,5 @@
 overrides:
+  # Temporary workaround for https://github.com/arethetypeswrong/arethetypeswrong.github.io/issues/258
+  fflate: 0.8.2
   vite: npm:@voidzero-dev/vite-plus-core@latest
   vitest: npm:@voidzero-dev/vite-plus-test@latest
