@@ -9,12 +9,12 @@
     "dist"
   ],
   "type": "module",
-  "scripts": {
-    "verify": "noeldemartin-verify"
-  },
   "exports": {
     ".": "./dist/index.mjs",
     "./package.json": "./package.json"
+  },
+  "scripts": {
+    "verify": "noeldemartin-verify"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
