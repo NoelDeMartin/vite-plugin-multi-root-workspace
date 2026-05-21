@@ -1,0 +1,28 @@
+{
+  "name": "vite-plugin-multi-root-workspace",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": "Noel De Martin",
+  "repository": "github:NoelDeMartin/vite-plugin-multi-root-workspace",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
+  "devDependencies": {
+    "@noeldemartin/scripts": "next",
+    "@types/node": "^25.6.2",
+    "@typescript/native-preview": "7.0.0-dev.20260509.2",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.13",
+    "vite-plus": "^0.1.20"
+  },
+  "peerDependencies": {
+    "vite": "*"
+  },
+  "packageManager": "pnpm@11.1.3"
+}
