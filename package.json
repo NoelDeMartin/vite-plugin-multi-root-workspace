@@ -16,6 +16,9 @@
   "scripts": {
     "verify": "noeldemartin-verify"
   },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1"
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
     "@noeldemartin/scripts": "next",

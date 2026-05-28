@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Plugin, UserConfig } from "vite";
+import { parse as parseJsonc, type ParseError } from "jsonc-parser";
 
 function findWorkspaceFile(folder: string, ancestors: number = 3): string | undefined {
   const workspaceFiles = fs
@@ -51,9 +52,19 @@ function getPackagesFromProject(projectRoot: string): { name: string; srcPath: s
 
 function aliasesFromWorkspaceFile(workspaceFile: string): Record<string, string> {
   const workspaceDirectory = path.dirname(workspaceFile);
-  const workspaceConfig = JSON.parse(fs.readFileSync(workspaceFile, "utf-8")) as {
+  const workspaceFileContents = fs.readFileSync(workspaceFile, "utf-8");
+  const parseErrors: ParseError[] = [];
+  const workspaceConfig = parseJsonc(workspaceFileContents, parseErrors, {
+    allowTrailingComma: true,
+  }) as {
     folders?: { path: string }[];
   };
+
+  if (parseErrors.length > 0) {
+    throw new Error(
+      `Invalid workspace file (${path.basename(workspaceFile)}): ${parseErrors[0]!.error}`,
+    );
+  }
   const aliases: Record<string, string> = {};
 
   for (const folder of workspaceConfig.folders ?? []) {
