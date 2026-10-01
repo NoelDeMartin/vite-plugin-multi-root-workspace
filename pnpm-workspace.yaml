@@ -1,5 +1,14 @@
+catalog:
+    vite: npm:@voidzero-dev/vite-plus-core@^1.0.0
+    vite-plus: ^1.0.0
 overrides:
-  # Temporary workaround for https://github.com/arethetypeswrong/arethetypeswrong.github.io/issues/258
-  fflate: 0.8.2
-  vite: npm:@voidzero-dev/vite-plus-core@latest
-  vitest: npm:@voidzero-dev/vite-plus-test@latest
+    # Temporary workaround for https://github.com/arethetypeswrong/arethetypeswrong.github.io/issues/258
+    fflate: 0.8.2
+    vite: 'catalog:'
+peerDependencyRules:
+    allowAny:
+        - vite
+    allowedVersions:
+        vite: '*'
+minimumReleaseAgeExclude:
+    - '@noeldemartin/*'

@@ -1,78 +1,79 @@
-import fs from "node:fs";
-import path from "node:path";
-import { normalizePath } from "vite";
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { normalizePath } from 'vite';
 
 export interface WorkspacePackage {
-  name: string;
-  srcPath: string;
-  stylePath?: string;
+    name: string;
+    srcPath: string;
+    stylePath?: string;
 }
 
 interface PackageJson {
-  name?: string;
-  style?: string;
-  exports?: unknown;
+    name?: string;
+    style?: string;
+    exports?: unknown;
 }
 
 function getExportsStyleEntry(exports: unknown): string | undefined {
-  if (!exports || typeof exports !== "object") {
-    return;
-  }
+    if (!exports || typeof exports !== 'object') {
+        return;
+    }
 
-  const rootExport = "." in exports ? exports["."] : exports;
+    const rootExport = '.' in exports ? exports['.'] : exports;
 
-  if (!rootExport || typeof rootExport !== "object" || !("style" in rootExport)) {
-    return;
-  }
+    if (!rootExport || typeof rootExport !== 'object' || !('style' in rootExport)) {
+        return;
+    }
 
-  return typeof rootExport.style === "string" ? rootExport.style : undefined;
+    return typeof rootExport.style === 'string' ? rootExport.style : undefined;
 }
 
 function getStylePath(packageDir: string, packageJson: PackageJson): string | undefined {
-  const styleEntry = getExportsStyleEntry(packageJson.exports) ?? packageJson.style;
+    const styleEntry = getExportsStyleEntry(packageJson.exports) ?? packageJson.style;
 
-  if (!styleEntry) {
-    return;
-  }
+    if (!styleEntry) {
+        return;
+    }
 
-  const stylePath = path.join(packageDir, styleEntry);
+    const stylePath = path.join(packageDir, styleEntry);
 
-  return fs.existsSync(stylePath) ? normalizePath(stylePath) : undefined;
+    return fs.existsSync(stylePath) ? normalizePath(stylePath) : undefined;
 }
 
 export function getPackagesFromProject(projectRoot: string): WorkspacePackage[] {
-  const packagesDir = path.join(projectRoot, "packages");
+    const packagesDir = path.join(projectRoot, 'packages');
 
-  if (!fs.existsSync(packagesDir)) {
-    return [];
-  }
-
-  return fs.readdirSync(packagesDir).flatMap((folder) => {
-    const packageDir = path.resolve(packagesDir, folder);
-    const packageJsonPath = path.join(packageDir, "package.json");
-
-    if (!fs.existsSync(packageJsonPath)) {
-      return [];
+    if (!fs.existsSync(packagesDir)) {
+        return [];
     }
 
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8")) as PackageJson;
+    return fs.readdirSync(packagesDir).flatMap((folder) => {
+        const packageDir = path.resolve(packagesDir, folder);
+        const packageJsonPath = path.join(packageDir, 'package.json');
 
-    if (!packageJson.name) {
-      return [];
-    }
+        if (!fs.existsSync(packageJsonPath)) {
+            return [];
+        }
 
-    const srcPath = path.join(packageDir, "src");
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
 
-    if (!fs.existsSync(srcPath)) {
-      return [];
-    }
+        if (!packageJson.name) {
+            return [];
+        }
 
-    return [
-      {
-        name: packageJson.name,
-        srcPath,
-        stylePath: getStylePath(packageDir, packageJson),
-      },
-    ];
-  });
+        const srcPath = path.join(packageDir, 'src');
+
+        if (!fs.existsSync(srcPath)) {
+            return [];
+        }
+
+        return [
+            {
+                name: packageJson.name,
+                srcPath,
+                stylePath: getStylePath(packageDir, packageJson),
+            },
+        ];
+    });
 }
