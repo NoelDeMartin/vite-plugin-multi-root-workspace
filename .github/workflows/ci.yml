@@ -20,6 +20,7 @@ jobs:
                   node-version-file: '.node-version'
                   cache: true
             - run: vp check
+            - run: vp test --reporter verbose
             - run: vp pack
     publish:
         if: github.ref == 'refs/heads/main'

@@ -13,11 +13,12 @@
     ],
     "type": "module",
     "exports": {
-        ".": "./dist/index.mjs",
-        "./package.json": "./package.json"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
     },
     "scripts": {
-        "build": "vp pack"
+        "build": "vp pack",
+        "test": "vp test"
     },
     "dependencies": {
         "jsonc-parser": "^3.3.1"
@@ -25,6 +26,7 @@
     "devDependencies": {
         "@arethetypeswrong/core": "^0.18.5",
         "@noeldemartin/scripts": "next",
+        "@noeldemartin/vite-plus-config": "next",
         "@types/node": "^26.6.3",
         "publint": "^0.3.24",
         "typescript": "~6.0.2",
@@ -34,5 +36,5 @@
     "peerDependencies": {
         "vite": "*"
     },
-    "packageManager": "pnpm@11.5.2"
+    "packageManager": "pnpm@12.8.1"
 }
