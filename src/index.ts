@@ -20,7 +20,11 @@ export default function workspace(): Plugin {
 
             const aliases: Record<string, string> = {};
 
-            for (const { name, srcPath, stylePath } of packagesFromWorkspaceFile(workspaceFile)) {
+            for (const { name, path: packagePath, srcPath, stylePath } of packagesFromWorkspaceFile(workspaceFile)) {
+                if (packagePath === projectRoot) {
+                    continue;
+                }
+
                 aliases[name] = srcPath;
 
                 if (stylePath) {

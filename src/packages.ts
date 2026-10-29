@@ -5,6 +5,7 @@ import { normalizePath } from 'vite';
 
 export interface WorkspacePackage {
     name: string;
+    path: string;
     srcPath: string;
     stylePath?: string;
 }
@@ -41,39 +42,52 @@ function getStylePath(packageDir: string, packageJson: PackageJson): string | un
     return fs.existsSync(stylePath) ? normalizePath(stylePath) : undefined;
 }
 
+function parsePackageJson(packageJsonPath: string): PackageJson {
+    try {
+        return JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
+    } catch (error) {
+        throw new Error(
+            `Invalid package.json (${packageJsonPath}): ${error instanceof Error ? error.message : String(error)}`,
+            { cause: error },
+        );
+    }
+}
+
+function getPackage(packageDir: string): WorkspacePackage[] {
+    const packageJsonPath = path.join(packageDir, 'package.json');
+
+    if (!fs.existsSync(packageJsonPath)) {
+        return [];
+    }
+
+    const packageJson = parsePackageJson(packageJsonPath);
+
+    if (!packageJson.name) {
+        return [];
+    }
+
+    const srcPath = path.join(packageDir, 'src');
+
+    if (!fs.existsSync(srcPath)) {
+        return [];
+    }
+
+    return [
+        {
+            name: packageJson.name,
+            path: packageDir,
+            srcPath,
+            stylePath: getStylePath(packageDir, packageJson),
+        },
+    ];
+}
+
 export function getPackagesFromProject(projectRoot: string): WorkspacePackage[] {
     const packagesDir = path.join(projectRoot, 'packages');
 
     if (!fs.existsSync(packagesDir)) {
-        return [];
+        return getPackage(projectRoot);
     }
 
-    return fs.readdirSync(packagesDir).flatMap((folder) => {
-        const packageDir = path.resolve(packagesDir, folder);
-        const packageJsonPath = path.join(packageDir, 'package.json');
-
-        if (!fs.existsSync(packageJsonPath)) {
-            return [];
-        }
-
-        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as PackageJson;
-
-        if (!packageJson.name) {
-            return [];
-        }
-
-        const srcPath = path.join(packageDir, 'src');
-
-        if (!fs.existsSync(srcPath)) {
-            return [];
-        }
-
-        return [
-            {
-                name: packageJson.name,
-                srcPath,
-                stylePath: getStylePath(packageDir, packageJson),
-            },
-        ];
-    });
+    return fs.readdirSync(packagesDir).flatMap((folder) => getPackage(path.resolve(packagesDir, folder)));
 }
